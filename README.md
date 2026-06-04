@@ -2,10 +2,12 @@
 
 ## Project Overview
 
-This project implements a basic payment transfer service for a digital banking system.
+This project implements a Basic Payment Transfer Service for a digital banking system.
 The service allows users to transfer funds between accounts while ensuring balance validation, transaction integrity, and audit logging.
 
 ---
+
+## Functional Requirements
 
 - Users should be able to initiate a transfer by providing both the source and destination account IDs, along with the transfer amount.
 - The system must validate that the source account has sufficient funds before processing the transfer.
