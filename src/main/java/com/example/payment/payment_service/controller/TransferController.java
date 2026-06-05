@@ -3,6 +3,7 @@ package com.example.payment.payment_service.controller;
 import com.example.payment.payment_service.dto.TransferRequest;
 import com.example.payment.payment_service.dto.TransferResponse;
 import com.example.payment.payment_service.service.TransferService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class TransferController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TransferResponse transfer(@RequestBody TransferRequest request) {
+    public TransferResponse transfer(@RequestBody @Valid TransferRequest request) {
         return transferService.transfer(request);
     }
 }

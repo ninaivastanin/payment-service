@@ -3,6 +3,7 @@ package com.example.payment.payment_service.controller;
 import com.example.payment.payment_service.dto.AccountRequest;
 import com.example.payment.payment_service.dto.AccountResponse;
 import com.example.payment.payment_service.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AccountController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponse createAccount(@RequestBody AccountRequest request) {
+    public AccountResponse createAccount(@RequestBody @Valid AccountRequest request) {
         return accountService.createAccount(request);
     }
 
