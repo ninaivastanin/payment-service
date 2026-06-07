@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * REST controller for money transfers.
  */
@@ -25,5 +27,17 @@ public class TransferController {
     @ResponseStatus(HttpStatus.CREATED)
     public TransferResponse transfer(@RequestBody @Valid TransferRequest request) {
         return transferService.transfer(request);
+    }
+
+    @GetMapping
+    public List<TransferResponse> getAllTransfers() {
+        return transferService.getAllTransfers();
+    }
+
+    @GetMapping("/account/{accountId}")
+    public List<TransferResponse> getTransfersForAccount(
+            @PathVariable Long accountId) {
+
+        return transferService.getTransfersForAccount(accountId);
     }
 }

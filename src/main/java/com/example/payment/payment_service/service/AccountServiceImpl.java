@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Implementation of AccountService.
@@ -63,6 +64,21 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(id));
+
+        return mapAccount(account);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AccountResponse> getAllAccounts() {
+
+        return accountRepository.findAll()
+                .stream()
+                .map(this::mapAccount)
+                .toList();
+    }
+
+    private AccountResponse mapAccount(Account account) {
 
         return new AccountResponse(
                 account.getId(),

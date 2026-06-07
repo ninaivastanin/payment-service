@@ -3,6 +3,8 @@ package com.example.payment.payment_service.service;
 import com.example.payment.payment_service.dto.TransferRequest;
 import com.example.payment.payment_service.dto.TransferResponse;
 
+import java.util.List;
+
 /**
  * Service responsible for processing money transfers between accounts.
  */
@@ -15,4 +17,8 @@ public interface TransferService {
      * @return transfer response
      */
     TransferResponse transfer(TransferRequest request);
+
+    List<TransferResponse> getAllTransfers();
+
+    List<TransferResponse> getTransfersForAccount(Long accountId);
 }

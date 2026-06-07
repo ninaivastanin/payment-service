@@ -13,10 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,7 +46,10 @@ class TransferControllerTest {
         TransferResponse response = new TransferResponse(
                 UUID.randomUUID(),
                 TransferStatus.SUCCESS,
-                "Transfer completed successfully"
+                "Transfer completed successfully",
+                1L,
+                2L,
+                BigDecimal.valueOf(100)
         );
 
         when(transferService.transfer(any(TransferRequest.class)))
@@ -55,6 +60,9 @@ class TransferControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value("SUCCESS"));
+
+        verify(transferService)
+                .transfer(any(TransferRequest.class));
     }
 
     @Test
@@ -70,5 +78,34 @@ class TransferControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(transferService);
+    }
+
+    @Test
+    void shouldReturnAllTransfers() throws Exception {
+
+        List<TransferResponse> transfers = List.of(
+                new TransferResponse(
+                        UUID.randomUUID(),
+                        TransferStatus.SUCCESS,
+                        "Transfer found",
+                        1L,
+                        2L,
+                        BigDecimal.valueOf(100)
+                )
+        );
+
+        when(transferService.getAllTransfers())
+                .thenReturn(transfers);
+
+        mockMvc.perform(get("/api/transfers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].sourceAccountId").value(1))
+                .andExpect(jsonPath("$[0].destinationAccountId").value(2))
+                .andExpect(jsonPath("$[0].amount").value(100));
+
+        verify(transferService).getAllTransfers();
     }
 }

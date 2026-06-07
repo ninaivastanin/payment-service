@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -22,4 +23,10 @@ public class TransferResponse {
     private TransferStatus status;
 
     private String message;
+
+    private Long sourceAccountId;
+
+    private Long destinationAccountId;
+
+    private BigDecimal amount;
 }

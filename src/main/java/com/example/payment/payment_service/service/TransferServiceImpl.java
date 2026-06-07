@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -71,7 +72,10 @@ public class TransferServiceImpl implements TransferService {
         return new TransferResponse(
                 transfer.getReference(),
                 transfer.getStatus(),
-                "Transfer completed successfully");
+                "Transfer completed successfully",
+                sourceAccount.getId(),
+                destinationAccount.getId(),
+                transfer.getAmount());
     }
 
     /**
@@ -96,5 +100,44 @@ public class TransferServiceImpl implements TransferService {
                     account.getBalance(),
                     amount);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TransferResponse> getAllTransfers() {
+
+        return transferRepository.findAll()
+                .stream()
+                .map(this::mapTransfer)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TransferResponse> getTransfersForAccount(Long accountId) {
+
+        accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(accountId));
+
+        return transferRepository
+                .findBySourceAccountIdOrDestinationAccountId(
+                        accountId,
+                        accountId
+                )
+                .stream()
+                .map(this::mapTransfer)
+                .toList();
+    }
+
+    private TransferResponse mapTransfer(Transfer transfer) {
+
+        return new TransferResponse(
+                transfer.getReference(),
+                transfer.getStatus(),
+                "Transfer found",
+                transfer.getSourceAccount().getId(),
+                transfer.getDestinationAccount().getId(),
+                transfer.getAmount()
+        );
     }
 }

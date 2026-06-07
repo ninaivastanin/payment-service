@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * REST controller for account management.
  */
@@ -27,5 +29,10 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountResponse getAccount(@PathVariable Long id) {
         return accountService.getAccount(id);
+    }
+
+    @GetMapping
+    public List<AccountResponse> getAllAccounts() {
+        return accountService.getAllAccounts();
     }
 }

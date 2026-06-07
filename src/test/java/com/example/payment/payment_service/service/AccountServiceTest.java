@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +54,8 @@ class AccountServiceTest {
         assertEquals("RS123", result.getAccountNumber());
         assertEquals(BigDecimal.valueOf(100), result.getBalance());
 
-        verify(accountRepository, times(1)).save(any(Account.class));
+        verify(accountRepository).findByAccountNumber("RS123");
+        verify(accountRepository).save(any(Account.class));
     }
 
     @Test
@@ -70,6 +72,9 @@ class AccountServiceTest {
 
         assertThrows(DuplicateAccountException.class,
                 () -> accountService.createAccount(request));
+
+        verify(accountRepository).findByAccountNumber("RS123");
+        verify(accountRepository, never()).save(any());
     }
 
     @Test
@@ -80,5 +85,33 @@ class AccountServiceTest {
 
         assertThrows(AccountNotFoundException.class,
                 () -> accountService.getAccount(1L));
+
+        verify(accountRepository).findById(1L);
+    }
+
+    @Test
+    void shouldReturnAllAccounts() {
+
+        Account acc1 = new Account();
+        acc1.setId(1L);
+        acc1.setAccountNumber("A1");
+        acc1.setBalance(BigDecimal.valueOf(100));
+        acc1.setCurrency("EUR");
+
+        Account acc2 = new Account();
+        acc2.setId(2L);
+        acc2.setAccountNumber("A2");
+        acc2.setBalance(BigDecimal.valueOf(200));
+        acc2.setCurrency("EUR");
+
+        when(accountRepository.findAll())
+                .thenReturn(List.of(acc1, acc2));
+
+        var result = accountService.getAllAccounts();
+
+        assertEquals(2, result.size());
+        assertEquals("A1", result.getFirst().getAccountNumber());
+
+        verify(accountRepository).findAll();
     }
 }
