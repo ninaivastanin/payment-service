@@ -95,3 +95,119 @@ src/main/resources/db/migration
 ```
 
 Migrations are executed automatically on application startup.
+
+---
+
+## API Endpoints
+
+### Accounts
+
+#### Create Account
+
+```http
+POST /api/accounts
+```
+
+Example request:
+
+```json
+{
+  "accountNumber": "RS123456789",
+  "initialBalance": 1000,
+  "currency": "EUR"
+}
+```
+
+#### Get All Accounts
+
+```http
+GET /api/accounts
+```
+
+#### Get Account By Id
+
+```http
+GET /api/accounts/{id}
+```
+
+---
+
+### Transfers
+
+#### Transfer Funds
+
+```http
+POST /api/transfers
+```
+
+Example request:
+
+```json
+{
+  "sourceAccountId": 1,
+  "destinationAccountId": 2,
+  "amount": 100
+}
+```
+
+#### Get All Transfers
+
+```http
+GET /api/transfers
+```
+
+#### Get Transfers For Account
+
+```http
+GET /api/transfers/account/{accountId}
+```
+
+---
+
+## Validation Rules
+
+### Account Creation
+
+* Account number must be unique.
+* Initial balance cannot be negative.
+* Currency is required.
+
+### Transfer Processing
+
+* Transfer amount must be greater than zero.
+* Source account must exist.
+* Destination account must exist.
+* Source account must have sufficient funds.
+
+---
+
+## Error Handling
+
+The application provides centralized exception handling and returns appropriate error responses for common failure scenarios:
+
+* Account not found
+* Duplicate account number
+* Invalid initial balance
+* Invalid transfer amount
+* Insufficient funds
+
+---
+
+## Running Tests
+
+To execute all tests:
+
+```bash
+mvn test
+```
+
+---
+
+## Postman Collection
+
+A ready-to-use Postman collection is available in:
+
+```text
+postman/payment-service.postman_collection.json
+```
+
