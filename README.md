@@ -191,6 +191,7 @@ The application provides centralized exception handling and returns appropriate 
 * Invalid initial balance
 * Invalid transfer amount
 * Insufficient funds
+* Transfers between the same account are not allowed
 
 ---
 
