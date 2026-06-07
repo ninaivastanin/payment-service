@@ -178,6 +178,7 @@ GET /api/transfers/account/{accountId}
 * Source account must exist.
 * Destination account must exist.
 * Source account must have sufficient funds.
+* Transfers between the same account are not allowed.
 
 ---
 

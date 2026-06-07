@@ -64,6 +64,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidTransferAccountsException.class)
+    public ResponseEntity<ApiError> handleInvalidTransferAccounts(
+            InvalidTransferAccountsException ex,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(
             Exception ex,

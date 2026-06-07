@@ -3,6 +3,7 @@ package com.example.payment.payment_service.controller;
 import com.example.payment.payment_service.dto.TransferRequest;
 import com.example.payment.payment_service.dto.TransferResponse;
 import com.example.payment.payment_service.entity.TransferStatus;
+import com.example.payment.payment_service.exception.InvalidTransferAccountsException;
 import com.example.payment.payment_service.service.TransferService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,24 @@ class TransferControllerTest {
 
         verify(transferService)
                 .transfer(any(TransferRequest.class));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenSameAccountTransfer() throws Exception {
+
+        TransferRequest request = new TransferRequest(
+                1L,
+                1L,
+                BigDecimal.valueOf(100)
+        );
+
+        when(transferService.transfer(any()))
+                .thenThrow(new InvalidTransferAccountsException(1L));
+
+        mockMvc.perform(post("/api/transfers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

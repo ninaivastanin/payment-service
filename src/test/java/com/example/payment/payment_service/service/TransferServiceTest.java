@@ -6,6 +6,7 @@ import com.example.payment.payment_service.entity.Transfer;
 import com.example.payment.payment_service.entity.TransferStatus;
 import com.example.payment.payment_service.exception.AccountNotFoundException;
 import com.example.payment.payment_service.exception.InsufficientFundsException;
+import com.example.payment.payment_service.exception.InvalidTransferAccountsException;
 import com.example.payment.payment_service.repository.AccountRepository;
 import com.example.payment.payment_service.repository.TransferRepository;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,19 @@ class TransferServiceTest {
 
         verify(accountRepository, times(2)).findById(anyLong());
         verify(transferRepository).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenTransferToSameAccount() {
+
+        TransferRequest request = new TransferRequest(
+                1L,
+                1L,
+                BigDecimal.valueOf(100)
+        );
+
+        assertThrows(InvalidTransferAccountsException.class,
+                () -> transferService.transfer(request));
     }
 
     @Test

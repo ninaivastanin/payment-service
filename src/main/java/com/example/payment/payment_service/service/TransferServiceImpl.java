@@ -7,6 +7,7 @@ import com.example.payment.payment_service.entity.Transfer;
 import com.example.payment.payment_service.entity.TransferStatus;
 import com.example.payment.payment_service.exception.AccountNotFoundException;
 import com.example.payment.payment_service.exception.InsufficientFundsException;
+import com.example.payment.payment_service.exception.InvalidTransferAccountsException;
 import com.example.payment.payment_service.exception.InvalidTransferAmountException;
 import com.example.payment.payment_service.repository.AccountRepository;
 import com.example.payment.payment_service.repository.TransferRepository;
@@ -36,6 +37,10 @@ public class TransferServiceImpl implements TransferService {
     public TransferResponse transfer(TransferRequest request) {
 
         validateAmount(request.getAmount());
+        validateDifferentAccounts(
+                request.getSourceAccountId(),
+                request.getDestinationAccountId()
+        );
 
         Account sourceAccount =
                 accountRepository.findById(request.getSourceAccountId())
@@ -85,6 +90,19 @@ public class TransferServiceImpl implements TransferService {
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidTransferAmountException(amount);
+        }
+    }
+
+    /**
+     * Validates that source and destination accounts are not the same.
+     *
+     * @param sourceId the ID of the source account
+     * @param destinationId the ID of the destination account
+     * @throws InvalidTransferAccountsException if both account IDs are equal
+     */
+    private void validateDifferentAccounts(Long sourceId, Long destinationId) {
+        if (sourceId.equals(destinationId)) {
+            throw new InvalidTransferAccountsException(sourceId);
         }
     }
 
